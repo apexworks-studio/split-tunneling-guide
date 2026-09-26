@@ -1,0 +1,16 @@
+# Never publish locally filled connection configs or keys.
+client.json
+server.json
+config.json
+*.local.json
+*.key
+*.pem
+*.p12
+*.pfx
+id_*
+.env
+.env.*
+*.log
+created-routes.json
+*.exe
+*.dll

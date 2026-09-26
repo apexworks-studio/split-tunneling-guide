@@ -1,0 +1,29 @@
+{
+  "log": { "loglevel": "info" },
+  "inbounds": [
+    { "tag": "apps-socks", "listen": "127.0.0.1", "port": 1080, "protocol": "socks", "settings": { "auth": "noauth", "udp": true, "ip": "127.0.0.1" } },
+    { "tag": "apps-http", "listen": "127.0.0.1", "port": 1081, "protocol": "http", "settings": {} },
+    { "tag": "tun-socks", "listen": "127.0.0.1", "port": 1082, "protocol": "socks", "settings": { "auth": "noauth", "udp": true, "ip": "127.0.0.1" } }
+  ],
+  "outbounds": [
+    { "tag": "direct", "protocol": "freedom", "settings": {} },
+    {
+      "tag": "vpn", "protocol": "vless",
+      "settings": { "vnext": [ { "address": "REPLACE_SERVER_IPV4", "port": 443, "users": [ { "id": "REPLACE_UUID", "encryption": "none", "flow": "xtls-rprx-vision" } ] } ] },
+      "streamSettings": {
+        "network": "tcp", "security": "reality",
+        "realitySettings": { "fingerprint": "chrome", "serverName": "REPLACE_REALITY_HOST", "publicKey": "REPLACE_PUBLIC_KEY", "shortId": "REPLACE_SHORT_ID", "spiderX": "/" }
+      }
+    },
+    { "tag": "block", "protocol": "blackhole", "settings": {} }
+  ],
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      { "type": "field", "ip": ["0.0.0.0/8", "10.0.0.0/8", "127.0.0.0/8", "169.254.0.0/16", "172.16.0.0/12", "192.168.0.0/16", "198.18.0.0/15", "224.0.0.0/4", "240.0.0.0/4", "::1/128", "fc00::/7", "fe80::/10", "ff00::/8"], "inboundTag": ["tun-socks"], "outboundTag": "block" },
+      { "type": "field", "inboundTag": ["tun-socks"], "outboundTag": "vpn" },
+      { "type": "field", "domain": ["domain:ipify.org", "domain:example.com"], "outboundTag": "vpn" },
+      { "type": "field", "network": "tcp,udp", "outboundTag": "direct" }
+    ]
+  }
+}
